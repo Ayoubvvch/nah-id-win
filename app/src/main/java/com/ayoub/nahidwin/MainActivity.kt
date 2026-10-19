@@ -11,6 +11,7 @@ import android.os.Environment
 import android.provider.Settings
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.webkit.*
 import android.widget.FrameLayout
 import android.widget.Toast
@@ -19,6 +20,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.webkit.WebViewAssetLoader
 import java.io.File
 import java.io.FileOutputStream
@@ -54,10 +57,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Setup dark status bar and navigation bar to match domain aesthetic
-        setupWindowDecorations()
+        // Automatic Immersive Sticky Fullscreen on startup
+        setupImmersiveFullscreen()
 
-        // Programmatic layout to eliminate XML inflation latency for ultra-fast boot
+        // Programmatic layout to eliminate XML inflation latency for instant startup
         rootLayout = FrameLayout(this).apply {
             setBackgroundColor(Color.parseColor("#020204"))
             layoutParams = ViewGroup.LayoutParams(
@@ -91,10 +94,18 @@ class MainActivity : AppCompatActivity() {
         setupBackNavigation()
     }
 
-    private fun setupWindowDecorations() {
-        WindowCompat.setDecorFitsSystemWindows(window, true)
-        window.statusBarColor = Color.parseColor("#020204")
-        window.navigationBarColor = Color.parseColor("#020204")
+    private fun setupImmersiveFullscreen() {
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        val insetsController = WindowCompat.getInsetsController(window, window.decorView)
+        insetsController.systemBarsBehavior =
+            WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        insetsController.hide(WindowInsetsCompat.Type.systemBars())
+
+        // Ensure display cutouts (notches) are extended for maximum immersion
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            window.attributes.layoutInDisplayCutoutMode =
+                WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+        }
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -118,7 +129,7 @@ class MainActivity : AppCompatActivity() {
             displayZoomControls = false
         }
 
-        // Expose native bridge for the in-app updater
+        // Bridge for In-App Updater
         webView.addJavascriptInterface(AndroidUpdaterBridge(), "AndroidUpdaterBridge")
 
         webView.webViewClient = object : WebViewClient() {
@@ -138,11 +149,9 @@ class MainActivity : AppCompatActivity() {
                 request: WebResourceRequest?
             ): Boolean {
                 val url = request?.url?.toString() ?: return false
-                // Internal assets load within the WebView
                 if (url.startsWith("https://appassets.androidplatform.net/")) {
                     return false
                 }
-                // External web links open in system browser
                 return try {
                     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
                     startActivity(intent)
@@ -165,6 +174,7 @@ class MainActivity : AppCompatActivity() {
                 webView.visibility = View.GONE
                 fullscreenContainer.visibility = View.VISIBLE
                 fullscreenContainer.addView(view)
+                setupImmersiveFullscreen()
             }
 
             override fun onHideCustomView() {
@@ -173,6 +183,7 @@ class MainActivity : AppCompatActivity() {
                 customView = null
                 customViewCallback?.onCustomViewHidden()
                 webView.visibility = View.VISIBLE
+                setupImmersiveFullscreen()
             }
 
             override fun onPermissionRequest(request: PermissionRequest?) {
@@ -180,7 +191,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        // Load the local app asset with high-speed internal origin
         webView.loadUrl("https://appassets.androidplatform.net/assets/index.html")
     }
 
@@ -188,7 +198,6 @@ class MainActivity : AppCompatActivity() {
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 if (customView != null) {
-                    // Exit fullscreen video
                     webView.webChromeClient?.onHideCustomView()
                 } else if (webView.canGoBack()) {
                     webView.goBack()
@@ -200,7 +209,7 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    // In-App APK Downloader and Installer Bridge
+    // In-App APK Downloader & Installer Bridge
     inner class AndroidUpdaterBridge {
         @JavascriptInterface
         fun startDownloadAndInstall(apkUrl: String, versionName: String) {
@@ -337,6 +346,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        setupImmersiveFullscreen()
         webView.onResume()
     }
 
