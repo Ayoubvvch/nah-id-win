@@ -1,0 +1,1387 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nah, I'd Win | The Awakening Protocol</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600&family=Cinzel:wght@500;700;900&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #020204;
+            --infinity-cyan: #00f0ff;
+            --infinity-blue: #3b82f6;
+            --hollow-purple: #9333ea;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-dark);
+            color: #e2e8f0;
+            overflow-x: hidden;
+            min-height: 100vh;
+            user-select: none;
+        }
+
+        .cinzel {
+            font-family: 'Cinzel', serif;
+        }
+
+        .cairo {
+            font-family: 'Cairo', sans-serif;
+        }
+
+        /* Subtle Noise Overlay */
+        .noise-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            pointer-events: none;
+            z-index: 999;
+            opacity: 0.035;
+            background: url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)"/%3E%3C/svg%3E');
+        }
+
+        /* Ambient Glow Spheres */
+        .orb-cyan {
+            position: fixed;
+            top: 15%;
+            left: 20%;
+            width: 450px;
+            height: 450px;
+            background: radial-gradient(circle, rgba(0, 240, 255, 0.12) 0%, rgba(0, 0, 0, 0) 70%);
+            border-radius: 50%;
+            filter: blur(80px);
+            pointer-events: none;
+            z-index: 0;
+            transition: all 1.5s ease;
+        }
+
+        .orb-purple {
+            position: fixed;
+            bottom: 10%;
+            right: 15%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(147, 51, 234, 0.15) 0%, rgba(0, 0, 0, 0) 70%);
+            border-radius: 50%;
+            filter: blur(90px);
+            pointer-events: none;
+            z-index: 0;
+            transition: all 1.5s ease;
+        }
+
+        /* Text Gradients */
+        .text-infinity {
+            background: linear-gradient(135deg, #ffffff 0%, #a5f3fc 40%, #38bdf8 70%, #818cf8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .text-hollow {
+            background: linear-gradient(135deg, #ffffff 0%, #d8b4fe 40%, #a855f7 70%, #6366f1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Card Effects */
+        .glass-card {
+            background: rgba(10, 12, 18, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+        }
+
+        .glass-card-interactive {
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .glass-card-interactive:hover {
+            border-color: rgba(0, 240, 255, 0.35);
+            box-shadow: 0 0 35px rgba(0, 240, 255, 0.15);
+            transform: translateY(-3px);
+        }
+
+        /* Hold Button Animation */
+        .pulse-win {
+            animation: win-breath 3s infinite ease-in-out;
+        }
+
+        @keyframes win-breath {
+            0%, 100% {
+                box-shadow: 0 0 25px rgba(0, 240, 255, 0.25), inset 0 0 15px rgba(0, 240, 255, 0.1);
+            }
+            50% {
+                box-shadow: 0 0 50px rgba(147, 51, 234, 0.45), inset 0 0 25px rgba(147, 51, 234, 0.25);
+            }
+        }
+
+        /* Shake animation for dramatic moments */
+        .shake-screen {
+            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+        }
+
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+
+        /* Whiteout Flash */
+        #flashOverlay {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: #ffffff;
+            z-index: 10000;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.8s ease-out;
+        }
+
+        /* Subtle Arabic Subtext */
+        .subtle-ar {
+            color: #52525b; /* zinc-600 */
+            font-size: 0.75rem;
+            line-height: 1.25rem;
+            direction: rtl;
+            unicode-bidi: isolate;
+            transition: color 0.3s ease;
+        }
+        .group:hover .subtle-ar {
+            color: #71717a; /* zinc-500 */
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: #020204; }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #38bdf8; }
+    </style>
+<!-- AC_SECURITY_START -->
+<link rel="stylesheet" href="/security-shield.css">
+<script src="/security-shield.js" defer></script>
+<!-- AC_SECURITY_END -->
+</head>
+<body class="relative flex flex-col justify-between items-center min-h-screen">
+
+    <div class="noise-overlay"></div>
+    <div id="flashOverlay"></div>
+    <div id="orbCyan" class="orb-cyan"></div>
+    <div id="orbPurple" class="orb-purple"></div>
+
+    <!-- Background Particle Canvas -->
+    <canvas id="particleCanvas" class="fixed inset-0 pointer-events-none z-0"></canvas>
+
+    <!-- Top Navigation / Controls Bar -->
+    <header class="w-full max-w-6xl mx-auto p-4 md:p-6 flex items-center justify-between z-20 relative">
+        <a href="/" class="flex items-center gap-2.5 text-zinc-400 hover:text-white transition-colors group px-3 py-1.5 rounded-lg border border-zinc-800/80 bg-zinc-950/60 backdrop-blur-md">
+            <i class="fa-solid fa-arrow-left text-xs group-hover:-translate-x-1 transition-transform"></i>
+            <span class="text-xs font-semibold tracking-wider">AcMods Suite</span>
+        </a>
+
+        <!-- Sound Control & Ritual Reset -->
+        <div class="flex items-center gap-2 sm:gap-3">
+            <!-- Post-Exam Quick Radar Button -->
+            <button onclick="openPostExamModal(true)" title="Post-Exam Surveillance" class="px-2.5 py-1.5 rounded-lg border border-cyan-500/50 bg-cyan-950/50 text-cyan-300 hover:text-white text-xs flex items-center gap-1.5 transition-all shadow-[0_0_15px_rgba(0,240,255,0.2)]">
+                <i class="fa-solid fa-crosshairs text-cyan-400 animate-pulse"></i>
+                <span class="font-bold text-[11px] sm:text-xs">خرجت للتو؟</span>
+            </button>
+            <!-- In-App Updater Button -->
+            <button id="updateCheckBtn" onclick="checkAppUpdate(true)" title="Check for Updates" class="px-2.5 py-1.5 rounded-lg border border-zinc-800/80 bg-zinc-950/60 text-zinc-400 hover:text-purple-400 text-xs flex items-center gap-1.5 transition-all">
+                <i id="updateIcon" class="fa-solid fa-cloud-arrow-down"></i>
+                <span id="updateVersionBadge" class="text-[11px] font-mono">v1.0.0</span>
+            </button>
+            <button id="soundToggleBtn" onclick="toggleAudio()" class="px-3 py-1.5 rounded-lg border border-zinc-800/80 bg-zinc-950/60 backdrop-blur-md text-zinc-400 hover:text-cyan-400 text-xs flex items-center gap-2 transition-all">
+                <i id="soundIcon" class="fa-solid fa-volume-xmark text-zinc-500"></i>
+                <span id="soundLabel">Audio: Muted</span>
+            </button>
+            <button onclick="resetRitual()" title="Reset Protocol" class="p-2 rounded-lg border border-zinc-800/80 bg-zinc-950/60 backdrop-blur-md text-zinc-400 hover:text-purple-400 text-xs transition-all">
+                <i class="fa-solid fa-rotate-right"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="w-full max-w-4xl mx-auto px-4 py-6 md:py-10 z-10 relative flex-1 flex flex-col justify-center items-center">
+
+        <!-- ========================================== -->
+        <!-- ACT 0: THE SANCTUARY ENTRY                 -->
+        <!-- ========================================== -->
+        <section id="act0" class="w-full text-center flex flex-col items-center justify-center transition-all duration-700">
+            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-cyan-500/30 bg-cyan-950/20 text-cyan-300 text-xs tracking-widest uppercase mb-6 font-semibold animate-pulse">
+                <span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
+                The Protocol of Self-Remembering
+            </div>
+
+            <h1 class="text-3xl sm:text-5xl md:text-6xl font-black mb-6 leading-tight">
+                <span class="text-white block mb-2">WHEN YOU FORGET WHO YOU ARE...</span>
+                <span class="text-infinity cinzel tracking-wide text-2xl sm:text-4xl md:text-5xl">ENTER THE DOMAIN</span>
+            </h1>
+
+            <p class="text-zinc-400 max-w-xl text-base sm:text-lg mb-2 leading-relaxed font-light">
+                This sanctuary was forged for a single moment: when the noise of fatigue weighs heavy, and doubt threatens to eclipse your sovereignty. Step inside and reclaim yourself.
+            </p>
+            <p class="subtle-ar mb-10">
+                (هذا المعبد أُنشئ للحظة واحدة: حين يثقل كاهلك التعب وتبدأ في التشكيك بنفسك... ادخل واسترجع سيادتك.)
+            </p>
+
+            <button onclick="startRitual()" class="group relative px-8 py-4 rounded-xl border border-cyan-500/50 bg-cyan-950/40 hover:bg-cyan-900/60 text-cyan-200 font-bold text-lg transition-all duration-300 shadow-[0_0_30px_rgba(0,240,255,0.2)] hover:shadow-[0_0_50px_rgba(0,240,255,0.4)] hover:scale-105 active:scale-95 flex items-center gap-3">
+                <span>AWAKEN</span>
+                <i class="fa-solid fa-bolt text-cyan-400 group-hover:rotate-12 transition-transform"></i>
+            </button>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- ACT 1: THE INQUIRY OF POWER                -->
+        <!-- ========================================== -->
+        <section id="act1" class="w-full hidden flex-col items-center text-center transition-all duration-700">
+            <!-- Stage Tracker -->
+            <div class="flex items-center gap-2 mb-8">
+                <span class="h-1 w-8 rounded-full bg-cyan-400"></span>
+                <span class="h-1 w-8 rounded-full bg-zinc-800"></span>
+                <span class="h-1 w-8 rounded-full bg-zinc-800"></span>
+                <span class="h-1 w-8 rounded-full bg-zinc-800"></span>
+            </div>
+
+            <div class="glass-card rounded-2xl p-6 sm:p-10 border-zinc-800/80 w-full mb-8 relative overflow-hidden">
+                <div class="absolute top-0 right-0 left-0 h-1 bg-gradient-to-r from-cyan-500/0 via-cyan-500/50 to-cyan-500/0"></div>
+                
+                <p class="text-cyan-400/80 text-xs uppercase tracking-widest mb-3 font-semibold">The Domain Inquires</p>
+                <h2 class="cinzel text-2xl sm:text-4xl font-extrabold text-white mb-3 tracking-wide">
+                    Who’s stronger, the National Exam or you?
+                </h2>
+                <p class="subtle-ar">
+                    (من الأقوى في هذه المعادلة... الامتحان الوطني بهيبته، أم أنت؟)
+                </p>
+            </div>
+
+            <!-- Choices -->
+            <div class="grid grid-cols-1 gap-4 w-full max-w-2xl">
+                <!-- Authentic Path Option -->
+                <button onclick="handleAct1Choice(true)" class="glass-card glass-card-interactive p-5 sm:p-6 rounded-xl text-left border-zinc-800 hover:border-cyan-400/50 group flex items-start gap-4">
+                    <div class="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 mt-1 flex-shrink-0 group-hover:bg-cyan-500/20 transition-colors">
+                        <i class="fa-solid fa-infinity text-sm"></i>
+                    </div>
+                    <div class="w-full">
+                        <div class="text-cyan-300 font-bold text-base sm:text-lg mb-1 group-hover:text-cyan-200">
+                            If Math, Physics, Chemistry, and every other subject came at me at full power, they might give me a little trouble.
+                        </div>
+                        <div class="subtle-ar">
+                            (لو اجتمعت الرياضيات والفيزياء والكيمياء وكل مادة أخرى ضدي بكامل قوتها... فقد تُتعبني قليلاً.)
+                        </div>
+                    </div>
+                </button>
+
+                <!-- Weakness / Doubt Option -->
+                <button onclick="handleAct1Choice(false)" class="glass-card p-4 rounded-xl text-left border-zinc-800/60 opacity-60 hover:opacity-90 hover:border-red-900/40 group flex items-start gap-4 transition-all">
+                    <div class="w-8 h-8 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-500 mt-1 flex-shrink-0">
+                        <i class="fa-solid fa-question text-xs"></i>
+                    </div>
+                    <div class="w-full">
+                        <div class="text-zinc-400 text-sm font-semibold group-hover:text-zinc-300">
+                            The syllabus is suffocating... maybe the odds are stacked against me.
+                        </div>
+                        <div class="subtle-ar">
+                            (صوت الشك والتردد أمام تراكم المقررات)
+                        </div>
+                    </div>
+                </button>
+            </div>
+
+            <div id="act1Warning" class="hidden mt-6 text-red-400/90 text-sm bg-red-950/20 border border-red-900/30 px-4 py-2.5 rounded-lg animate-pulse max-w-lg text-center">
+                <i class="fa-solid fa-triangle-exclamation mr-1.5"></i>
+                That is the transient voice of fatigue, not your core. Look deeper and speak with sovereignty.
+                <span class="subtle-ar block mt-1">(هذا صوت الإرهاق المؤقت لا حقيقتك... أجب بالصوت الذي يستحقه عقلك!)</span>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- ACT 2: THE ASSEMBLY OF TITANS              -->
+        <!-- ========================================== -->
+        <section id="act2" class="w-full hidden flex-col items-center text-center transition-all duration-700">
+            <!-- Stage Tracker -->
+            <div class="flex items-center gap-2 mb-8">
+                <span class="h-1 w-8 rounded-full bg-cyan-400"></span>
+                <span class="h-1 w-8 rounded-full bg-cyan-400"></span>
+                <span class="h-1 w-8 rounded-full bg-zinc-800"></span>
+                <span class="h-1 w-8 rounded-full bg-zinc-800"></span>
+            </div>
+
+            <div class="glass-card rounded-2xl p-6 sm:p-8 border-zinc-800/80 w-full mb-8 relative">
+                <p class="text-indigo-400/80 text-xs uppercase tracking-widest mb-2 font-semibold">The Domain Observes</p>
+                <h2 class="text-2xl sm:text-3xl font-bold text-white mb-2">
+                    A little trouble? Look at them assembling before you.
+                </h2>
+                <p class="text-zinc-400 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed mb-1">
+                    They will not attack one by one. They converge simultaneously:
+                </p>
+                <p class="subtle-ar mb-5">
+                    (لن يأتوا فرادى... بل سيجتمعون في اختبار واحد لا هوادة فيه:)
+                </p>
+
+                <!-- Subject Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5 my-6 text-left">
+                    <div class="p-3.5 rounded-xl border border-cyan-900/30 bg-cyan-950/10">
+                        <div class="flex items-center gap-2 text-cyan-400 font-bold text-sm mb-1">
+                            <i class="fa-solid fa-square-root-variable"></i>
+                            <span>Mathematics</span>
+                        </div>
+                        <p class="text-zinc-400 text-xs leading-normal">
+                            Multi-variable integration, complex algebra, differential geometry, and probability traps.
+                        </p>
+                        <p class="subtle-ar mt-2">(التكاملات، الأعداد العقدية، وحساب الاحتمالات)</p>
+                    </div>
+
+                    <div class="p-3.5 rounded-xl border border-indigo-900/30 bg-indigo-950/10">
+                        <div class="flex items-center gap-2 text-indigo-400 font-bold text-sm mb-1">
+                            <i class="fa-solid fa-atom"></i>
+                            <span>Physics</span>
+                        </div>
+                        <p class="text-zinc-400 text-xs leading-normal">
+                            Newtonian dynamics, electromagnetic oscillations, wave interference, and nuclear decay.
+                        </p>
+                        <p class="subtle-ar mt-2">(الميكانيك، الكهرباء، الموجات، والتحولات النووية)</p>
+                    </div>
+
+                    <div class="p-3.5 rounded-xl border border-purple-900/30 bg-purple-950/10">
+                        <div class="flex items-center gap-2 text-purple-400 font-bold text-sm mb-1">
+                            <i class="fa-solid fa-flask-vial"></i>
+                            <span>Chemistry & All Subjects</span>
+                        </div>
+                        <p class="text-zinc-400 text-xs leading-normal">
+                            Reaction kinetics, dynamic equilibria, exhaustive analysis, and non-stop timed evaluations.
+                        </p>
+                        <p class="subtle-ar mt-2">(سرعة التفاعلات، توازنات المحاليل، وبقية المواد)</p>
+                    </div>
+                </div>
+
+                <p class="text-zinc-300 text-sm font-medium">
+                    The fragile pray for an easy trial. What do you demand?
+                </p>
+                <p class="subtle-ar mt-1">
+                    (الضعفاء يتمنون امتحاناً سهلاً... فماذا تطلب أنت؟)
+                </p>
+            </div>
+
+            <!-- Choice -->
+            <button onclick="handleAct2Choice()" class="glass-card glass-card-interactive p-5 sm:p-6 rounded-xl text-center border-cyan-500/30 hover:border-cyan-400 w-full max-w-2xl group shadow-[0_0_25px_rgba(0,240,255,0.1)]">
+                <div class="text-cyan-300 font-bold text-base sm:text-lg mb-1 group-hover:text-cyan-200">
+                    I don’t pray for an easier exam. I pray for them to strike at their absolute peak.
+                </div>
+                <div class="subtle-ar">
+                    (لا أرجو امتحاناً سهلاً... بل أريدهم في ذروة قوتهم، ليعلم الجميع أنني حطمت أصعب ما لديهم دون أن أهتز.)
+                </div>
+            </button>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- ACT 3: THE FATAL QUESTION                  -->
+        <!-- ========================================== -->
+        <section id="act3" class="w-full hidden flex-col items-center text-center transition-all duration-700">
+            <!-- Stage Tracker -->
+            <div class="flex items-center gap-2 mb-8">
+                <span class="h-1 w-8 rounded-full bg-cyan-400"></span>
+                <span class="h-1 w-8 rounded-full bg-cyan-400"></span>
+                <span class="h-1 w-8 rounded-full bg-cyan-400"></span>
+                <span class="h-1 w-8 rounded-full bg-zinc-800"></span>
+            </div>
+
+            <div class="py-12 sm:py-16 w-full flex flex-col items-center">
+                <div class="w-20 h-20 rounded-full border border-purple-500/30 bg-purple-950/20 flex items-center justify-center text-purple-400 text-2xl mb-8 animate-pulse shadow-[0_0_40px_rgba(147,51,234,0.3)]">
+                    <i class="fa-solid fa-eye"></i>
+                </div>
+
+                <p class="text-purple-400 text-xs sm:text-sm uppercase tracking-widest mb-3 font-semibold">The Domain's Fatal Question</p>
+                
+                <h2 class="cinzel text-3xl sm:text-5xl md:text-6xl font-black text-white mb-2 tracking-wide drop-shadow-[0_0_30px_rgba(255,255,255,0.2)]">
+                    But would you lose?
+                </h2>
+
+                <p class="subtle-ar mb-12">
+                    (ولكن... هل ستُهزم؟)
+                </p>
+
+                <!-- THE UNSTOPPABLE CHOICE -->
+                <div class="relative w-full max-w-md flex flex-col items-center">
+                    <button id="winBtn" onclick="triggerAwakening()" class="pulse-win group relative w-full py-6 px-8 rounded-2xl border-2 border-cyan-400 bg-gradient-to-r from-cyan-950 via-zinc-950 to-purple-950 text-white font-black text-2xl sm:text-3xl cinzel tracking-wider transition-all duration-500 hover:scale-105 active:scale-95 flex items-center justify-center gap-4">
+                        <span class="text-infinity">Nah, I’d win.</span>
+                    </button>
+                    <span class="text-zinc-500 text-xs mt-4 tracking-widest uppercase">Click to Unleash Domain Expansion</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- ACT 4: THE HONORED ONE (AWAKENING)         -->
+        <!-- ========================================== -->
+        <section id="act4" class="w-full hidden flex-col items-center text-center transition-all duration-700">
+            
+            <!-- Enlightenment Header -->
+            <div class="mb-10 text-center">
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-purple-500/40 bg-purple-950/30 text-purple-300 text-xs tracking-widest uppercase mb-4 font-semibold">
+                    <i class="fa-solid fa-crown text-yellow-400"></i>
+                    Domain Expansion: Infinite Mastery
+                </div>
+
+                <h1 class="cinzel text-3xl sm:text-5xl md:text-6xl font-black text-infinity tracking-wider mb-3">
+                    Nah, I’d win.
+                </h1>
+                
+                <p class="cinzel text-lg sm:text-2xl text-purple-300 font-semibold tracking-wide italic mb-2">
+                    Throughout Heaven and Earth, I alone am the honored one.
+                </p>
+                <p class="subtle-ar mb-4">
+                    (بين السماء والأرض... أنا وحدي السيد على مصيري.)
+                </p>
+
+                <p class="text-zinc-400 max-w-2xl mx-auto text-base sm:text-lg leading-relaxed font-light">
+                    The exam is not an adversary to be feared. It is merely the arena engineered to showcase your intellectual dominance.
+                </p>
+            </div>
+
+            <!-- Pillars of Dominance -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full mb-10 text-left">
+                <div class="glass-card p-6 rounded-2xl border-zinc-800/80 hover:border-cyan-500/40 transition-all">
+                    <div class="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 mb-4">
+                        <i class="fa-solid fa-brain"></i>
+                    </div>
+                    <h3 class="text-white font-bold text-lg mb-2">Intellect Above All Systems</h3>
+                    <p class="text-zinc-400 text-sm leading-relaxed mb-3">
+                        No equation devised in the history of this exam exceeds the capacity of your mind to deconstruct. Complexity dissolves beneath pure execution.
+                    </p>
+                    <p class="subtle-ar">(عقلك قادر على تفكيك أي مسألة وضعت في هذا الامتحان خطوة بخطوة.)</p>
+                </div>
+
+                <div class="glass-card p-6 rounded-2xl border-zinc-800/80 hover:border-purple-500/40 transition-all">
+                    <div class="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 mb-4">
+                        <i class="fa-solid fa-fire-flame-curved"></i>
+                    </div>
+                    <h3 class="text-white font-bold text-lg mb-2">Fatigue Forges Sovereignty</h3>
+                    <p class="text-zinc-400 text-sm leading-relaxed mb-3">
+                        When exhaustion strikes in late hours, recognize the fire tempering elite character. The undisciplined stop; you accelerate.
+                    </p>
+                    <p class="subtle-ar">(التعب هو ثمن التفرد... حين يتوقف الآخرون، أنت تواصل التقدم.)</p>
+                </div>
+
+                <div class="glass-card p-6 rounded-2xl border-zinc-800/80 hover:border-indigo-500/40 transition-all">
+                    <div class="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-indigo-400 mb-4">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <h3 class="text-white font-bold text-lg mb-2">Pre-Determined Victory</h3>
+                    <p class="text-zinc-400 text-sm leading-relaxed mb-3">
+                        Triumph does not begin on result day. It was forged the instant you refused compromise. The test is merely paperwork confirming your rank.
+                    </p>
+                    <p class="subtle-ar">(النتيجة حُسمت بالفعل في اللحظة التي قررت فيها أن تنتصر.)</p>
+                </div>
+            </div>
+
+            <!-- Subject Submission Status (Execution Ledger) -->
+            <div class="glass-card rounded-2xl p-6 sm:p-8 border-zinc-800 w-full mb-10 text-left">
+                <div class="flex items-center justify-between border-b border-zinc-800 pb-4 mb-6">
+                    <div class="flex items-center gap-2.5">
+                        <span class="w-3 h-3 rounded-full bg-emerald-500 animate-ping"></span>
+                        <h3 class="text-white font-bold text-lg">Execution Ledger</h3>
+                    </div>
+                    <span class="text-xs text-emerald-400 font-mono tracking-wider">ALL THREATS NEUTRALIZED</span>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between p-3 rounded-xl bg-zinc-950/60 border border-zinc-900">
+                        <div class="flex items-center gap-3">
+                            <span class="text-cyan-400 font-mono text-sm font-bold">01</span>
+                            <span class="text-zinc-200 text-sm font-semibold">Mathematics</span>
+                        </div>
+                        <span class="text-xs px-2.5 py-1 rounded-md bg-cyan-950/60 text-cyan-300 border border-cyan-800/50">Subordinated to Pure Logic</span>
+                    </div>
+
+                    <div class="flex items-center justify-between p-3 rounded-xl bg-zinc-950/60 border border-zinc-900">
+                        <div class="flex items-center gap-3">
+                            <span class="text-indigo-400 font-mono text-sm font-bold">02</span>
+                            <span class="text-zinc-200 text-sm font-semibold">Physics</span>
+                        </div>
+                        <span class="text-xs px-2.5 py-1 rounded-md bg-indigo-950/60 text-indigo-300 border border-indigo-800/50">Universal Laws Decoded</span>
+                    </div>
+
+                    <div class="flex items-center justify-between p-3 rounded-xl bg-zinc-950/60 border border-zinc-900">
+                        <div class="flex items-center gap-3">
+                            <span class="text-purple-400 font-mono text-sm font-bold">03</span>
+                            <span class="text-zinc-200 text-sm font-semibold">Chemistry & Core Subjects</span>
+                        </div>
+                        <span class="text-xs px-2.5 py-1 rounded-md bg-purple-950/60 text-purple-300 border border-purple-800/50">Reactions Mapped & Solved</span>
+                    </div>
+
+                    <div class="flex items-center justify-between p-3 rounded-xl bg-zinc-950/60 border border-zinc-900">
+                        <div class="flex items-center gap-3">
+                            <span class="text-yellow-400 font-mono text-sm font-bold">04</span>
+                            <span class="text-zinc-200 text-sm font-semibold">The National Exam</span>
+                        </div>
+                        <span class="text-xs px-2.5 py-1 rounded-md bg-emerald-950/60 text-emerald-300 border border-emerald-800/50 font-bold">Doomed to Defeat</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Future Self Vow -->
+            <div class="glass-card rounded-2xl p-6 sm:p-8 border-cyan-500/20 w-full mb-10 text-left relative overflow-hidden">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-white font-bold text-lg flex items-center gap-2">
+                        <i class="fa-solid fa-feather-pointed text-cyan-400"></i>
+                        Vow to My Future Self
+                    </h3>
+                    <span id="saveStatus" class="text-xs text-zinc-500 transition-opacity">Auto-saved locally</span>
+                </div>
+                
+                <textarea id="personalOathText" oninput="savePersonalOath()" rows="3" class="w-full bg-black/60 border border-zinc-800 rounded-xl p-4 text-zinc-200 text-sm focus:outline-none focus:border-cyan-500 transition-colors leading-relaxed" placeholder="Inscribe your personal vow here... this text persists in your local browser whenever doubt returns."></textarea>
+            </div>
+
+            <!-- Deep Focus Audio Generator & Domain Timer -->
+            <div class="glass-card rounded-2xl p-6 sm:p-8 border-zinc-800 w-full mb-10 text-center">
+                <h3 class="text-white font-bold text-lg mb-2">Domain Focus Session</h3>
+                <p class="text-zinc-400 text-xs mb-6">Now that you remember who you are... enter deep work and crush your objectives.</p>
+
+                <div class="text-4xl sm:text-5xl font-mono font-bold text-cyan-300 mb-6 tracking-wider" id="focusTimerDisplay">
+                    50:00
+                </div>
+
+                <div class="flex flex-wrap items-center justify-center gap-3 mb-6">
+                    <button onclick="startFocusTimer(25)" class="px-4 py-2 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-cyan-500 text-zinc-300 text-xs font-semibold transition-all">25 min (Sprint)</button>
+                    <button onclick="startFocusTimer(50)" class="px-4 py-2 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-cyan-500 text-cyan-300 text-xs font-semibold transition-all">50 min (Deep Work)</button>
+                    <button onclick="startFocusTimer(90)" class="px-4 py-2 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-cyan-500 text-purple-300 text-xs font-semibold transition-all">90 min (Exam Simulation)</button>
+                    <button onclick="toggleFocusTimer()" id="timerControlBtn" class="px-6 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-black font-bold text-xs transition-all">Start Timer</button>
+                </div>
+
+                <div class="inline-flex items-center gap-3 px-4 py-2 rounded-xl bg-zinc-950/80 border border-zinc-800 text-xs text-zinc-400">
+                    <i class="fa-solid fa-wave-square text-cyan-400"></i>
+                    <span>40Hz Cognitive Gamma Waves for Elite Focus:</span>
+                    <button onclick="toggleBinauralBeat()" id="binauralBtn" class="text-cyan-400 font-bold hover:underline">Activate</button>
+                </div>
+            </div>
+
+            <!-- Bottom Actions -->
+            <div class="flex flex-wrap items-center justify-center gap-4">
+                <button onclick="resetRitual()" class="px-6 py-3 rounded-xl border border-zinc-800 bg-zinc-950 hover:bg-zinc-900 text-zinc-300 text-sm font-semibold flex items-center gap-2 transition-all">
+                    <i class="fa-solid fa-arrow-rotate-left"></i>
+                    <span>Replay Ritual</span>
+                </button>
+                <a href="/" class="px-6 py-3 rounded-xl border border-cyan-500/40 bg-cyan-950/30 hover:bg-cyan-900/50 text-cyan-200 text-sm font-semibold flex items-center gap-2 transition-all shadow-[0_0_20px_rgba(0,240,255,0.15)]">
+                    <i class="fa-solid fa-house"></i>
+                    <span>Return to AcMods Suite</span>
+                </a>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="w-full text-center py-6 text-zinc-600 text-xs z-10 relative border-t border-zinc-900/40">
+        <p>AcMods Suite • Forged for the Honored Minds. <span class="text-zinc-500">Nah, I'd win.</span></p>
+    </footer>
+
+    <!-- Audio Synthesis Engine (Zero dependencies, pure Web Audio API) -->
+    <script>
+        let audioCtx = null;
+        let isAudioMuted = true;
+        let droneOsc = null;
+        let droneGain = null;
+        let binauralOscLeft = null;
+        let binauralOscRight = null;
+        let binauralGain = null;
+        let isBinauralPlaying = false;
+
+        function initAudio() {
+            if (!audioCtx) {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                audioCtx = new AudioContext();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function toggleAudio() {
+            initAudio();
+            isAudioMuted = !isAudioMuted;
+            const icon = document.getElementById('soundIcon');
+            const label = document.getElementById('soundLabel');
+            const btn = document.getElementById('soundToggleBtn');
+
+            if (isAudioMuted) {
+                icon.className = 'fa-solid fa-volume-xmark text-zinc-500';
+                label.innerText = 'Audio: Muted';
+                btn.classList.remove('border-cyan-500/50', 'text-cyan-400');
+                stopDrone();
+            } else {
+                icon.className = 'fa-solid fa-volume-high text-cyan-400 animate-pulse';
+                label.innerText = 'Audio: Active';
+                btn.classList.add('border-cyan-500/50', 'text-cyan-400');
+                startDrone();
+                playTone(220, 'sine', 0.1, 0.4);
+            }
+        }
+
+        function startDrone() {
+            if (isAudioMuted || droneOsc) return;
+            try {
+                droneOsc = audioCtx.createOscillator();
+                droneGain = audioCtx.createGain();
+                droneOsc.type = 'sine';
+                droneOsc.frequency.setValueAtTime(55, audioCtx.currentTime); // Low A
+
+                const filter = audioCtx.createBiquadFilter();
+                filter.type = 'lowpass';
+                filter.frequency.setValueAtTime(120, audioCtx.currentTime);
+
+                droneGain.gain.setValueAtTime(0.01, audioCtx.currentTime);
+                droneGain.gain.exponentialRampToValueAtTime(0.08, audioCtx.currentTime + 3);
+
+                droneOsc.connect(filter);
+                filter.connect(droneGain);
+                droneGain.connect(audioCtx.destination);
+                droneOsc.start();
+            } catch(e) {}
+        }
+
+        function stopDrone() {
+            if (droneOsc) {
+                try {
+                    droneGain.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 1);
+                    setTimeout(() => {
+                        droneOsc.stop();
+                        droneOsc.disconnect();
+                        droneOsc = null;
+                        droneGain = null;
+                    }, 1000);
+                } catch(e) {}
+            }
+        }
+
+        function playTone(freq, type = 'sine', duration = 0.5, volume = 0.2) {
+            if (isAudioMuted || !audioCtx) return;
+            try {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                gain.gain.setValueAtTime(volume, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch(e) {}
+        }
+
+        function playHeartbeat() {
+            if (isAudioMuted || !audioCtx) return;
+            playTone(60, 'sine', 0.2, 0.3);
+            setTimeout(() => playTone(50, 'sine', 0.3, 0.25), 180);
+        }
+
+        function playImpact() {
+            if (isAudioMuted || !audioCtx) return;
+            try {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(140, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(30, audioCtx.currentTime + 0.8);
+
+                const filter = audioCtx.createBiquadFilter();
+                filter.type = 'lowpass';
+                filter.frequency.setValueAtTime(250, audioCtx.currentTime);
+                filter.frequency.exponentialRampToValueAtTime(40, audioCtx.currentTime + 0.8);
+
+                gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.9);
+
+                osc.connect(filter);
+                filter.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 1);
+            } catch(e) {}
+        }
+
+        function playAscensionChord() {
+            if (isAudioMuted || !audioCtx) return;
+            const freqs = [130.81, 196.00, 261.63, 329.63, 392.00, 523.25];
+            freqs.forEach((f, idx) => {
+                setTimeout(() => {
+                    playTone(f, 'sine', 3.5, 0.15);
+                }, idx * 120);
+            });
+        }
+
+        function toggleBinauralBeat() {
+            initAudio();
+            const btn = document.getElementById('binauralBtn');
+            if (isBinauralPlaying) {
+                stopBinauralBeat();
+                btn.innerText = 'Activate';
+                btn.classList.remove('text-purple-400');
+                btn.classList.add('text-cyan-400');
+            } else {
+                startBinauralBeat();
+                btn.innerText = 'Deactivate';
+                btn.classList.remove('text-cyan-400');
+                btn.classList.add('text-purple-400');
+            }
+        }
+
+        function startBinauralBeat() {
+            if (!audioCtx) return;
+            try {
+                binauralOscLeft = audioCtx.createOscillator();
+                binauralOscRight = audioCtx.createOscillator();
+                binauralGain = audioCtx.createGain();
+
+                const merger = audioCtx.createChannelMerger(2);
+
+                binauralOscLeft.frequency.setValueAtTime(200, audioCtx.currentTime);
+                binauralOscRight.frequency.setValueAtTime(240, audioCtx.currentTime); // 40Hz beat
+
+                binauralGain.gain.setValueAtTime(0.06, audioCtx.currentTime);
+
+                binauralOscLeft.connect(merger, 0, 0);
+                binauralOscRight.connect(merger, 0, 1);
+
+                merger.connect(binauralGain);
+                binauralGain.connect(audioCtx.destination);
+
+                binauralOscLeft.start();
+                binauralOscRight.start();
+                isBinauralPlaying = true;
+            } catch(e) {}
+        }
+
+        function stopBinauralBeat() {
+            if (binauralOscLeft) {
+                try {
+                    binauralOscLeft.stop();
+                    binauralOscRight.stop();
+                    binauralOscLeft.disconnect();
+                    binauralOscRight.disconnect();
+                    binauralOscLeft = null;
+                    binauralOscRight = null;
+                } catch(e) {}
+            }
+            isBinauralPlaying = false;
+        }
+
+        // ==========================================
+        // Particle Engine
+        // ==========================================
+        const canvas = document.getElementById('particleCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let numParticles = 45;
+        let isDomainExplosion = false;
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 0.8;
+                this.speedX = (Math.random() - 0.5) * 0.4;
+                this.speedY = (Math.random() - 0.5) * 0.4;
+                this.alpha = Math.random() * 0.6 + 0.2;
+                this.color = Math.random() > 0.4 ? 'rgba(0, 240, 255, ' : 'rgba(147, 51, 234, ';
+            }
+            update() {
+                if (isDomainExplosion) {
+                    this.speedX *= 1.05;
+                    this.speedY *= 1.05;
+                }
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) {
+                    this.reset();
+                }
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = this.color + this.alpha + ')';
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = '#00f0ff';
+                ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < numParticles; i++) {
+            particles.push(new Particle());
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        // ==========================================
+        // Ritual Flow State Management
+        // ==========================================
+        const act0 = document.getElementById('act0');
+        const act1 = document.getElementById('act1');
+        const act2 = document.getElementById('act2');
+        const act3 = document.getElementById('act3');
+        const act4 = document.getElementById('act4');
+        const orbCyan = document.getElementById('orbCyan');
+        const orbPurple = document.getElementById('orbPurple');
+
+        function startRitual() {
+            initAudio();
+            playHeartbeat();
+            act0.classList.add('hidden');
+            act1.classList.remove('hidden');
+            act1.classList.add('flex');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function handleAct1Choice(isAuthentic) {
+            initAudio();
+            if (isAuthentic) {
+                playImpact();
+                document.getElementById('act1Warning').classList.add('hidden');
+                act1.classList.add('hidden');
+                act2.classList.remove('hidden');
+                act2.classList.add('flex');
+                orbCyan.style.transform = 'scale(1.3)';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                playTone(90, 'sawtooth', 0.4, 0.2);
+                const warn = document.getElementById('act1Warning');
+                warn.classList.remove('hidden');
+                document.body.classList.add('shake-screen');
+                setTimeout(() => document.body.classList.remove('shake-screen'), 500);
+            }
+        }
+
+        function handleAct2Choice() {
+            initAudio();
+            playImpact();
+            act2.classList.add('hidden');
+            act3.classList.remove('hidden');
+            act3.classList.add('flex');
+            orbPurple.style.transform = 'scale(1.4)';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            playHeartbeat();
+            setTimeout(playHeartbeat, 1400);
+        }
+
+        function triggerAwakening() {
+            initAudio();
+            const flash = document.getElementById('flashOverlay');
+            
+            flash.style.opacity = '1';
+            playImpact();
+            playAscensionChord();
+            document.body.classList.add('shake-screen');
+
+            isDomainExplosion = true;
+            setTimeout(() => { isDomainExplosion = false; }, 1800);
+
+            setTimeout(() => {
+                act3.classList.add('hidden');
+                act4.classList.remove('hidden');
+                act4.classList.add('flex');
+                flash.style.opacity = '0';
+                document.body.classList.remove('shake-screen');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                loadPersonalOath();
+            }, 600);
+        }
+
+        function resetRitual() {
+            [act1, act2, act3, act4].forEach(act => {
+                act.classList.add('hidden');
+                act.classList.remove('flex');
+            });
+            act0.classList.remove('hidden');
+            act0.classList.add('flex');
+            orbCyan.style.transform = 'scale(1)';
+            orbPurple.style.transform = 'scale(1)';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ==========================================
+        // Local Personal Oath Storage
+        // ==========================================
+        const DEFAULT_OATH = "I am not here to merely survive the test. I am here to dominate it. Mathematics, Physics, and Chemistry are instruments in my hands. No matter the brutality of the National Exam, I will walk in calm as a tempest, and walk out victorious.\n(أنا لست هنا للمحاولة... أنا هنا للانتصار. الرياضيات والفيزياء والكيمياء أدوات في يدي، وسأخرج منتصراً.)";
+
+        function loadPersonalOath() {
+            const oathArea = document.getElementById('personalOathText');
+            const saved = localStorage.getItem('ac_nah_id_win_oath');
+            if (saved) {
+                oathArea.value = saved;
+            } else {
+                oathArea.value = DEFAULT_OATH;
+            }
+        }
+
+        function savePersonalOath() {
+            const val = document.getElementById('personalOathText').value;
+            localStorage.setItem('ac_nah_id_win_oath', val);
+            const status = document.getElementById('saveStatus');
+            status.innerText = 'Saved ✓';
+            status.classList.add('text-cyan-400');
+            setTimeout(() => {
+                status.innerText = 'Auto-saved locally';
+                status.classList.remove('text-cyan-400');
+            }, 2000);
+        }
+
+        // ==========================================
+        // Focus Timer Engine
+        // ==========================================
+        let focusTimerInterval = null;
+        let focusTimeRemaining = 50 * 60;
+        let isFocusRunning = false;
+
+        function updateTimerDisplay() {
+            const mins = Math.floor(focusTimeRemaining / 60);
+            const secs = focusTimeRemaining % 60;
+            document.getElementById('focusTimerDisplay').innerText = 
+                `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        }
+
+        function startFocusTimer(minutes) {
+            clearInterval(focusTimerInterval);
+            isFocusRunning = false;
+            focusTimeRemaining = minutes * 60;
+            updateTimerDisplay();
+            toggleFocusTimer();
+        }
+
+        function toggleFocusTimer() {
+            const btn = document.getElementById('timerControlBtn');
+            if (isFocusRunning) {
+                clearInterval(focusTimerInterval);
+                isFocusRunning = false;
+                btn.innerText = 'Resume';
+                btn.className = 'px-6 py-2 rounded-lg bg-zinc-700 hover:bg-zinc-600 text-white font-bold text-xs transition-all';
+            } else {
+                initAudio();
+                playTone(330, 'sine', 0.2, 0.2);
+                isFocusRunning = true;
+                btn.innerText = 'Pause';
+                btn.className = 'px-6 py-2 rounded-lg bg-red-600 hover:bg-red-500 text-white font-bold text-xs transition-all';
+                focusTimerInterval = setInterval(() => {
+                    if (focusTimeRemaining > 0) {
+                        focusTimeRemaining--;
+                        updateTimerDisplay();
+                    } else {
+                        clearInterval(focusTimerInterval);
+                        isFocusRunning = false;
+                        playAscensionChord();
+                        alert('Focus session complete. You took another giant step toward absolute victory.');
+                        btn.innerText = 'Start Timer';
+                    }
+                }, 1000);
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', loadPersonalOath);
+    </script>
+
+    <!-- ========================================================= -->
+    <!-- POST-EXAM SURVEILLANCE MODAL (JUJUTSU KAISEN EASTER EGG)   -->
+    <!-- ========================================================= -->
+    <div id="postExamModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-xl transition-all duration-500 hidden opacity-0">
+        <div class="glass-card max-w-xl w-full rounded-3xl p-6 sm:p-8 border border-cyan-500/40 shadow-[0_0_60px_rgba(0,240,255,0.25)] relative overflow-hidden text-center">
+            <div class="absolute -top-24 -left-24 w-48 h-48 bg-cyan-500/20 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -bottom-24 -right-24 w-48 h-48 bg-purple-600/20 rounded-full blur-3xl pointer-events-none"></div>
+
+            <!-- Close Modal Icon -->
+            <button onclick="closePostExamModal()" class="absolute top-4 right-4 text-zinc-500 hover:text-zinc-200 transition-colors p-2 text-sm z-10" title="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <!-- Step 1: Initial Question -->
+            <div id="examStep1" class="transition-all duration-300">
+                <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 text-2xl shadow-[0_0_25px_rgba(0,240,255,0.2)]">
+                    <i class="fa-solid fa-door-open animate-bounce"></i>
+                </div>
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-cyan-500/30 bg-cyan-950/40 text-cyan-300 text-xs tracking-wider uppercase mb-3 font-semibold">
+                    <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping"></span>
+                    رادار ما بعد الامتحان
+                </div>
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-white mb-3">
+                    هل أنت الآن خرجت للتو منه؟
+                </h2>
+                <p class="text-zinc-400 text-sm mb-6 max-w-md mx-auto">
+                    امتحان الرياضيات أو المواد العلمية... هل انتهيت للتو وأغلقت الورقة؟
+                </p>
+                <div class="flex flex-col sm:flex-row gap-3 justify-center">
+                    <button onclick="goToExamStep(2)" class="px-6 py-3.5 rounded-xl border border-cyan-400 bg-gradient-to-r from-cyan-950 to-blue-900 text-cyan-200 font-bold hover:scale-105 active:scale-95 transition-all shadow-[0_0_25px_rgba(0,240,255,0.3)] flex items-center justify-center gap-2">
+                        <span>نعم، خرجت للتو! 🔥</span>
+                    </button>
+                    <button onclick="closePostExamModal()" class="px-6 py-3.5 rounded-xl border border-zinc-800 bg-zinc-950/80 text-zinc-400 hover:text-white transition-all text-sm">
+                        <span>لا، أريد بروتوكول الصحوة 🏛️</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 2: Did you fight seriously? -->
+            <div id="examStep2" class="hidden transition-all duration-300">
+                <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 text-2xl shadow-[0_0_25px_rgba(147,51,234,0.3)]">
+                    <i class="fa-solid fa-khanda"></i>
+                </div>
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-purple-500/30 bg-purple-950/40 text-purple-300 text-xs tracking-wider uppercase mb-3 font-semibold">
+                    سؤال النزال
+                </div>
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-white mb-3 cinzel">
+                    هل قاتلت بجدية؟
+                </h2>
+                <p class="text-zinc-400 text-sm mb-6 max-w-md mx-auto">
+                    هل وضعت كل تركيزك وصرامتك في كل سؤال ومسألة؟
+                </p>
+                <div class="flex justify-center">
+                    <button onclick="goToExamStep(3)" class="w-full sm:w-auto px-8 py-3.5 rounded-xl border border-purple-400 bg-gradient-to-r from-purple-950 to-indigo-950 text-purple-200 font-bold hover:scale-105 active:scale-95 transition-all shadow-[0_0_30px_rgba(147,51,234,0.3)] flex items-center justify-center gap-2">
+                        <span>نعم، قاتلت بكل ما أوتيت من قوة! ⚔️</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 3: Did you win? -->
+            <div id="examStep3" class="hidden transition-all duration-300">
+                <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 text-2xl shadow-[0_0_25px_rgba(0,240,255,0.3)]">
+                    <i class="fa-solid fa-trophy"></i>
+                </div>
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-cyan-500/30 bg-cyan-950/40 text-cyan-300 text-xs tracking-wider uppercase mb-3 font-semibold">
+                    حسم المعركة
+                </div>
+                <h2 class="text-3xl sm:text-4xl font-black text-white mb-3 cinzel">
+                    هل فزت؟
+                </h2>
+                <p class="subtle-ar mb-6">
+                    (أمام جبروت المسائل ودقائق الوقت... ما هو الحكم؟)
+                </p>
+                <div class="flex justify-center">
+                    <button onclick="goToExamStep(4)" class="w-full sm:w-auto px-8 py-4 rounded-2xl border-2 border-cyan-400 bg-gradient-to-r from-cyan-950 via-zinc-950 to-purple-950 text-white font-black text-xl cinzel tracking-wider hover:scale-105 active:scale-95 transition-all shadow-[0_0_40px_rgba(0,240,255,0.4)]">
+                        <span class="text-infinity">Nah, I'd win. 👑</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 4: Surveillance Camera inquiry -->
+            <div id="examStep4" class="hidden transition-all duration-300">
+                <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-red-500/10 border border-red-500/30 flex items-center justify-center text-red-400 text-2xl shadow-[0_0_25px_rgba(239,68,68,0.2)]">
+                    <i class="fa-solid fa-video animate-pulse"></i>
+                </div>
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-red-500/30 bg-red-950/40 text-red-300 text-xs tracking-wider uppercase mb-3 font-semibold">
+                    تسجيل سري ملتقط
+                </div>
+                <h2 class="text-xl sm:text-2xl font-bold text-white mb-3 leading-relaxed">
+                    لقد سجلتك كاميرا المراقبة و أنت تتقاتل معه... هل تريد أن ترى الفيديو؟
+                </h2>
+                <p class="text-zinc-400 text-xs sm:text-sm mb-6">
+                    تم التقاط مواجهتك الأسطورية ضد الامتحان بتفاصيل خارقة.
+                </p>
+                <div class="flex justify-center">
+                    <button onclick="revealSurveillanceVideo()" class="px-8 py-3.5 rounded-xl border border-red-500/60 bg-gradient-to-r from-red-950 to-purple-950 text-red-200 font-bold hover:scale-105 active:scale-95 transition-all shadow-[0_0_35px_rgba(239,68,68,0.3)] flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-play"></i>
+                        <span>أرني التسجيل الآن! 📹</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 5: The Grand Reveal & Video Player -->
+            <div id="examStep5" class="hidden transition-all duration-500">
+                <div class="text-infinity cinzel text-xl sm:text-2xl font-black tracking-wider mb-1">
+                    THIS IS YOU AGAINST IT
+                </div>
+                <h2 class="text-2xl sm:text-3xl font-black text-white mb-1">
+                    هذا أنت ضده 🔥
+                </h2>
+                <p class="subtle-ar mb-4">
+                    (ملحمة غوجو ضد سوكونا — البث الحصري لقتالك)
+                </p>
+
+                <!-- Cinematic Video Player Container -->
+                <div class="relative w-full rounded-2xl overflow-hidden border border-cyan-500/50 shadow-[0_0_50px_rgba(0,240,255,0.3)] bg-black mb-4">
+                    <video id="postExamVideoPlayer" class="w-full max-h-[60vh] object-contain mx-auto" controls playsinline preload="auto">
+                        <source src="video/gojo_sukuna.mp4" type="video/mp4">
+                        <source src="https://archive.org/download/gojo-sukuna-anime-jjk-jujustukaisen-20261019183002-awsp/1792434602286_gojo-sukuna-anime-jjk-jujustukaisen.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+                <div class="flex flex-wrap items-center justify-center gap-3">
+                    <button onclick="replayPostExamVideo()" class="px-4 py-2 rounded-xl border border-purple-500/40 bg-purple-950/40 text-purple-300 hover:text-white text-xs font-semibold flex items-center gap-2 transition-all">
+                        <i class="fa-solid fa-rotate-left"></i>
+                        <span>إعادة تشغيل الفيديو</span>
+                    </button>
+                    <button onclick="closePostExamModal()" class="px-5 py-2 rounded-xl border border-cyan-500/50 bg-cyan-950/50 text-cyan-200 hover:bg-cyan-900/60 text-xs font-bold flex items-center gap-2 transition-all shadow-[0_0_20px_rgba(0,240,255,0.2)]">
+                        <i class="fa-solid fa-crown"></i>
+                        <span>ادخل معبد الصحوة (Act 0)</span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- IN-APP UPDATER MODAL                                       -->
+    <!-- ========================================================= -->
+    <div id="updaterModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-xl transition-all duration-300 hidden opacity-0">
+        <div class="glass-card max-w-md w-full rounded-3xl p-6 sm:p-8 border border-purple-500/40 shadow-[0_0_60px_rgba(147,51,234,0.25)] relative text-center">
+            
+            <button onclick="closeUpdaterModal()" class="absolute top-4 right-4 text-zinc-500 hover:text-zinc-200 transition-colors p-2 text-sm" title="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="w-14 h-14 mx-auto mb-4 rounded-2xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 text-2xl shadow-[0_0_25px_rgba(147,51,234,0.2)]">
+                <i id="updaterModalIcon" class="fa-solid fa-arrows-rotate"></i>
+            </div>
+
+            <h3 id="updaterModalTitle" class="text-xl font-bold text-white mb-2">
+                فحص التحديثات
+            </h3>
+            <p id="updaterModalDesc" class="text-zinc-400 text-xs leading-relaxed mb-6">
+                جاري الاتصال بـ GitHub Releases للتأكد من وجود أحدث نسخة...
+            </p>
+
+            <!-- Progress Bar Section -->
+            <div id="updaterProgressContainer" class="hidden mb-6 text-left">
+                <div class="flex items-center justify-between text-xs text-zinc-400 mb-2">
+                    <span id="updaterProgressLabel">جاري التحميل...</span>
+                    <span id="updaterProgressPercent" class="font-mono text-cyan-400 font-bold">0%</span>
+                </div>
+                <div class="w-full h-2 rounded-full bg-zinc-900 border border-zinc-800 overflow-hidden">
+                    <div id="updaterProgressBar" class="h-full bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-200" style="width: 0%"></div>
+                </div>
+                <div class="flex items-center justify-between text-[10px] text-zinc-500 mt-1 font-mono">
+                    <span id="updaterProgressLoaded">0 MB</span>
+                    <span id="updaterProgressTotal">...</span>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div id="updaterActionContainer" class="flex items-center justify-center gap-3">
+                <button onclick="closeUpdaterModal()" class="px-4 py-2 rounded-xl border border-zinc-800 bg-zinc-950 text-zinc-400 hover:text-white text-xs font-semibold transition-all">
+                    إغلاق
+                </button>
+                <button id="updaterDownloadBtn" onclick="startUpdateDownload()" class="hidden px-5 py-2 rounded-xl border border-cyan-500/50 bg-cyan-600 hover:bg-cyan-500 text-black text-xs font-bold transition-all shadow-[0_0_20px_rgba(0,240,255,0.3)]">
+                    تحديث الآن
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- EXTENSION LOGIC: POST-EXAM SURVEILLANCE & IN-APP UPDATER  -->
+    <!-- ========================================================= -->
+    <script>
+        const CURRENT_APP_VERSION = "1.0.0";
+        const GITHUB_REPO = "Ayoubvvch/nah-id-win";
+        let latestReleaseData = null;
+
+        // --- Post-Exam Dialog Controller ---
+        function openPostExamModal(force = false) {
+            goToExamStep(1);
+            const modal = document.getElementById('postExamModal');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+            }, 20);
+        }
+
+        function closePostExamModal() {
+            const modal = document.getElementById('postExamModal');
+            modal.classList.add('opacity-0');
+            const video = document.getElementById('postExamVideoPlayer');
+            if (video) video.pause();
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 400);
+        }
+
+        function goToExamStep(stepNum) {
+            for (let i = 1; i <= 5; i++) {
+                const el = document.getElementById(`examStep${i}`);
+                if (el) el.classList.add('hidden');
+            }
+            const target = document.getElementById(`examStep${stepNum}`);
+            if (target) {
+                target.classList.remove('hidden');
+            }
+            if (stepNum > 1) {
+                if (typeof playImpact === 'function') playImpact();
+            }
+        }
+
+        function revealSurveillanceVideo() {
+            goToExamStep(5);
+            const video = document.getElementById('postExamVideoPlayer');
+            if (video) {
+                video.currentTime = 0;
+                video.play().catch(e => {
+                    console.log("Autoplay blocked, user can press play manually:", e);
+                });
+            }
+            if (typeof playAscensionChord === 'function') {
+                playAscensionChord();
+            }
+        }
+
+        function replayPostExamVideo() {
+            const video = document.getElementById('postExamVideoPlayer');
+            if (video) {
+                video.currentTime = 0;
+                video.play();
+            }
+        }
+
+        // Auto prompt on first visit or launch if not dismissed in session
+        window.addEventListener('DOMContentLoaded', () => {
+            const askedThisSession = sessionStorage.getItem('ac_nah_asked_post_exam');
+            if (!askedThisSession) {
+                sessionStorage.setItem('ac_nah_asked_post_exam', 'true');
+                setTimeout(() => {
+                    openPostExamModal(false);
+                }, 1200);
+            }
+        });
+
+        // --- In-App Updater Controller ---
+        async function checkAppUpdate(userInitiated = false) {
+            const modal = document.getElementById('updaterModal');
+            const title = document.getElementById('updaterModalTitle');
+            const desc = document.getElementById('updaterModalDesc');
+            const icon = document.getElementById('updaterModalIcon');
+            const downloadBtn = document.getElementById('updaterDownloadBtn');
+            const progress = document.getElementById('updaterProgressContainer');
+
+            progress.classList.add('hidden');
+            downloadBtn.classList.add('hidden');
+            title.innerText = "فحص التحديثات...";
+            desc.innerText = "جاري الاتصال بـ GitHub للتحقق من وجود إصدار أحدث...";
+            icon.className = "fa-solid fa-arrows-rotate fa-spin text-purple-400";
+
+            modal.classList.remove('hidden');
+            setTimeout(() => modal.classList.remove('opacity-0'), 20);
+
+            try {
+                const res = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/releases/latest`, {
+                    headers: { 'Accept': 'application/vnd.github.v3+json' }
+                });
+
+                if (!res.ok) {
+                    throw new Error(`Status ${res.status}`);
+                }
+
+                const data = await res.json();
+                latestReleaseData = data;
+                const latestTag = (data.tag_name || "").replace(/^v/, "").trim();
+
+                if (isNewerVersion(latestTag, CURRENT_APP_VERSION)) {
+                    title.innerText = `يتوفر تحديث جديد! (v${latestTag})`;
+                    desc.innerText = data.body || "اضغط على زر التحديث لتنزيل وتثبيت أحدث نسخة تلقائياً دون فقدان بياناتك.";
+                    icon.className = "fa-solid fa-sparkles text-cyan-400";
+                    downloadBtn.classList.remove('hidden');
+                } else {
+                    title.innerText = "أنت على أحدث إصدار! ✓";
+                    desc.innerText = `تطبيقك يعمل بالإصدار الحالي (v${CURRENT_APP_VERSION}) وهو الأحدث بالكامل.`;
+                    icon.className = "fa-solid fa-circle-check text-emerald-400";
+                }
+            } catch (err) {
+                title.innerText = "تعذر فحص التحديثات";
+                desc.innerText = "يرجى التأكد من اتصالك بالإنترنت والمحاولة مجدداً لاحقاً.";
+                icon.className = "fa-solid fa-triangle-exclamation text-amber-400";
+            }
+        }
+
+        function isNewerVersion(remote, local) {
+            if (!remote) return false;
+            const rParts = remote.split('.').map(Number);
+            const lParts = local.split('.').map(Number);
+            for (let i = 0; i < Math.max(rParts.length, lParts.length); i++) {
+                const r = rParts[i] || 0;
+                const l = lParts[i] || 0;
+                if (r > l) return true;
+                if (r < l) return false;
+            }
+            return false;
+        }
+
+        function closeUpdaterModal() {
+            const modal = document.getElementById('updaterModal');
+            modal.classList.add('opacity-0');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
+        function startUpdateDownload() {
+            if (!latestReleaseData) return;
+            const apkAsset = (latestReleaseData.assets || []).find(a => a.name.endsWith('.apk'));
+            const downloadUrl = apkAsset ? apkAsset.browser_download_url : latestReleaseData.html_url;
+            const versionName = (latestReleaseData.tag_name || "latest").replace(/^v/, "");
+
+            const progress = document.getElementById('updaterProgressContainer');
+            const downloadBtn = document.getElementById('updaterDownloadBtn');
+            const desc = document.getElementById('updaterModalDesc');
+
+            progress.classList.remove('hidden');
+            downloadBtn.classList.add('hidden');
+            desc.innerText = "جاري تحميل الحزمة وتجهيز المثبت التلقائي...";
+
+            if (window.AndroidUpdaterBridge && typeof window.AndroidUpdaterBridge.startDownloadAndInstall === 'function') {
+                window.AndroidUpdaterBridge.startDownloadAndInstall(downloadUrl, versionName);
+            } else {
+                // Browser fallback
+                window.open(downloadUrl, '_blank');
+            }
+        }
+
+        // Bridge Callbacks from Native Android
+        window.onUpdateDownloadProgress = function(percent, loadedStr, totalStr) {
+            const bar = document.getElementById('updaterProgressBar');
+            const pText = document.getElementById('updaterProgressPercent');
+            const lText = document.getElementById('updaterProgressLoaded');
+            const tText = document.getElementById('updaterProgressTotal');
+
+            if (bar) bar.style.width = percent + '%';
+            if (pText) pText.innerText = percent + '%';
+            if (lText) lText.innerText = loadedStr;
+            if (tText) tText.innerText = totalStr;
+        };
+
+        window.onUpdateDownloadComplete = function() {
+            const desc = document.getElementById('updaterModalDesc');
+            if (desc) desc.innerText = "اكتمل التنزيل بنجاح! يتم الآن فتح مثبت الحزم...";
+            setTimeout(closeUpdaterModal, 1500);
+        };
+
+        window.onUpdateDownloadError = function(errMsg) {
+            const desc = document.getElementById('updaterModalDesc');
+            if (desc) desc.innerText = "حدث خطأ أثناء التنزيل: " + errMsg;
+            const downloadBtn = document.getElementById('updaterDownloadBtn');
+            if (downloadBtn) downloadBtn.classList.remove('hidden');
+        };
+    </script>
+
+</body>
+</html>
